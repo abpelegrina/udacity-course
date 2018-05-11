@@ -14,7 +14,6 @@ class Category {
   final String name;
   final ColorSwatch color;
   final List<Unit> units;
-
   final String iconLocation;
 
   /// Information about a [Category].
