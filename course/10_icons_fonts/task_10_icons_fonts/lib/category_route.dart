@@ -73,6 +73,8 @@ class _CategoryRouteState extends State<CategoryRoute> {
   ];
   // TODO: Add image asset paths here
 
+
+
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
