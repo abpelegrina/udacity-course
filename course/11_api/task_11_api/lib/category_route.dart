@@ -7,7 +7,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-// TODO: Import necessary package
+import 'api.dart';
 import 'backdrop.dart';
 import 'category.dart';
 import 'category_tile.dart';
@@ -92,7 +92,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
     // We only want to load our data in once
     if (_categories.isEmpty) {
       await _retrieveLocalCategories();
-      // TODO: Call _retrieveApiCategory() here
+      await _retrieveApiCategory();
     }
   }
 
@@ -128,9 +128,25 @@ class _CategoryRouteState extends State<CategoryRoute> {
     });
   }
 
-  // TODO: Add the Currency Category retrieved from the API, to our _categories
+
   /// Retrieves a [Category] and its [Unit]s from an API on the web
-  Future<void> _retrieveApiCategory() async {}
+  Future<void> _retrieveApiCategory() async {
+    final api = Api();
+    final String categoryName = 'Currency';
+
+    var category = Category(
+      name: categoryName,
+      units: await api.getUnits(categoryName.toLowerCase()),
+      color: _baseColors[_categories.length],
+      iconLocation: _icons[_categories.length],
+    );
+
+    setState(() {
+      _categories.add(category);
+    });
+
+    print(_categories);
+  }
 
   /// Function to call when a [Category] is tapped.
   void _onCategoryTap(Category category) {
