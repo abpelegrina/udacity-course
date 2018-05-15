@@ -37,6 +37,9 @@ class _CategoryRouteState extends State<CategoryRoute> {
   // `children` property, we call .toList() on it.
   // For more details, see https://github.com/dart-lang/sdk/issues/27755
   final _categories = <Category>[];
+
+  var _currencyTappable = false;
+
   static const _baseColors = <ColorSwatch>[
     ColorSwatch(0xFF6AB7A8, {
       'highlight': Color(0xFF6AB7A8),
@@ -72,6 +75,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
       'error': Color(0xFF912D2D),
     }),
   ];
+
   static const _icons = <String>[
     'assets/icons/length.png',
     'assets/icons/area.png',
@@ -141,6 +145,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
     });
     final api = Api();
     final jsonUnits = await api.getUnits(apiCategory['route']);
+
     // If the API errors out or we have no internet connection, this category
     // remains in placeholder mode (disabled)
     if (jsonUnits != null) {
@@ -149,6 +154,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
         units.add(Unit.fromJson(unit));
       }
       setState(() {
+        _currencyTappable = true;
         _categories.removeLast();
         _categories.add(Category(
           name: apiCategory['name'],
@@ -162,9 +168,9 @@ class _CategoryRouteState extends State<CategoryRoute> {
 
   /// Function to call when a [Category] is tapped.
   void _onCategoryTap(Category category) {
-    setState(() {
-      _currentCategory = category;
-    });
+      setState(() {
+          _currentCategory = category;
+      });
   }
 
   /// Makes the correct number of rows for the list view, based on whether the
@@ -177,10 +183,17 @@ class _CategoryRouteState extends State<CategoryRoute> {
         itemBuilder: (BuildContext context, int index) {
           // TODO: You may want to make the Currency [Category] not tappable
           // while it is loading, or if there an error.
-          return CategoryTile(
-            category: _categories[index],
-            onTap: _onCategoryTap,
-          );
+
+          if (_categories[index].name != apiCategory['name'] || _currencyTappable)
+            return CategoryTile(
+              category: _categories[index],
+              onTap: _onCategoryTap,
+            );
+          else
+            return CategoryTile(
+              category: _categories[index],
+              onTap: null,
+            );
         },
         itemCount: _categories.length,
       );

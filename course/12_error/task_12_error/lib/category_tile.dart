@@ -31,7 +31,6 @@ class CategoryTile extends StatelessWidget {
     // accordingly.
     @required this.onTap,
   })  : assert(category != null),
-        assert(onTap != null),
         super(key: key);
 
   /// Builds a custom widget that shows [Category] information.
@@ -53,7 +52,6 @@ class CategoryTile extends StatelessWidget {
           splashColor: category.color['splash'],
           // We can use either the () => function() or the () { function(); }
           // syntax.
-          onTap: () => onTap(category),
           child: Padding(
             padding: EdgeInsets.all(8.0),
             child: Row(
@@ -77,6 +75,7 @@ class CategoryTile extends StatelessWidget {
               ],
             ),
           ),
+          onTap: onTap != null?() => onTap(category) : (){},
         ),
       ),
     );

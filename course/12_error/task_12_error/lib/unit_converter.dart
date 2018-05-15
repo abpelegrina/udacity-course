@@ -38,6 +38,9 @@ class _UnitConverterState extends State<UnitConverter> {
   final _inputKey = GlobalKey(debugLabel: 'inputText');
   // TODO: Add a flag for whether to show error UI
 
+  var _showErrorUI = false;
+  final _errorText = 'Error doing conversion!';
+
   @override
   void initState() {
     super.initState();
@@ -110,9 +113,14 @@ class _UnitConverterState extends State<UnitConverter> {
       final conversion = await api.convert(apiCategory['route'],
           _inputValue.toString(), _fromValue.name, _toValue.name);
       // TODO: Check whether to show an error UI
-      setState(() {
-        _convertedValue = _format(conversion);
-      });
+      if (conversion == null)
+        setState(() {
+          _showErrorUI = true;
+        });
+      else
+        setState(() {
+          _convertedValue = _format(conversion);
+        });
     } else {
       // For the static units, we do the conversion ourselves
       setState(() {
@@ -203,7 +211,13 @@ class _UnitConverterState extends State<UnitConverter> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Build an error UI
+    if (widget.category.units == null || (this._showErrorUI && widget.category.name == apiCategory['name']))
+      return Padding(
+        padding: _padding,
+        child:Container(
+          child:Text(_errorText),
+        ),
+      );
 
     final input = Padding(
       padding: _padding,
